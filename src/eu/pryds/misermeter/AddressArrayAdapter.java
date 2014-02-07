@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
@@ -30,6 +31,7 @@ public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
         public TextView balance;
         public TextView address;
         public TextView balanceConverted;
+        public ImageView icon;
         
     }
     
@@ -46,6 +48,7 @@ public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
             holder.balance = (TextView) v.findViewById(R.id.item_balance);
             holder.address = (TextView) v.findViewById(R.id.item_address);
             holder.balanceConverted = (TextView) v.findViewById(R.id.item_balance_converted);
+            holder.icon = (ImageView) v.findViewById(R.id.item_icon);
             v.setTag(holder);
         }
         else
@@ -54,9 +57,10 @@ public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
         final BitcoinAddress custom = entries.get(position);
         if (custom != null) {
             holder.comment.setText(custom.getComment());
-            holder.balance.setText(custom.getBalanceAsString());
-            holder.address.setText(custom.getAddress());
+            holder.balance.setText(custom.getRoundedBalanceAsString());
+            holder.address.setText(custom.getShortenedAddress());
             holder.balanceConverted.setText(custom.getConvertedBalanceAsString());
+            holder.icon.setImageResource(custom.getIconRessource());
         }
         return v;
     }

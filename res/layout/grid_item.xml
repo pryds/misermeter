@@ -1,52 +1,68 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp" >
-
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        
-        <TextView
-            android:id="@+id/item_comment"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/item_balance" />
-        
-        <TextView
-            android:id="@id/item_balance"
-            android:textSize="25sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
-        
-    </RelativeLayout>
+    android:orientation="horizontal" >
     
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        
-        <TextView
-            android:id="@+id/item_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/item_balance_converted" />
-        
-        <TextView 
-            android:id="@id/item_balance_converted"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />    
-        
-        <!-- See http://stackoverflow.com/questions/2099249/aligning-textviews-on-the-left-and-right-edges-in-android-layout -->
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp" />
     
-    </RelativeLayout>
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	
+	    <RelativeLayout
+	        android:orientation="horizontal"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        
+	        <TextView
+	            android:id="@+id/item_comment"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_toLeftOf="@+id/item_balance"
+	            android:padding="5dp" />
+	        
+	        <TextView
+	            android:id="@id/item_balance"
+	            android:textSize="18sp"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:padding="5dp" />
+	        
+	    </RelativeLayout>
+	    
+	    <RelativeLayout
+	        android:orientation="horizontal"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        
+	        <TextView
+	            android:id="@+id/item_address"
+	            android:textSize="10sp"
+	            android:textColor="#888888"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_toLeftOf="@+id/item_balance_converted"
+	            android:padding="5dp" />
+	        
+	        <TextView 
+	            android:id="@id/item_balance_converted"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:padding="5dp" />    
+	        
+	        <!-- See http://stackoverflow.com/questions/2099249/aligning-textviews-on-the-left-and-right-edges-in-android-layout -->
+	    
+	    </RelativeLayout>
+	
+	</LinearLayout>
 
 </LinearLayout>

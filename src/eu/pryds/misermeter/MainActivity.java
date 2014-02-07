@@ -22,8 +22,9 @@ public class MainActivity extends Activity {
         addressArray.add(new BitcoinAddress("1DBUPW5iJq13Ufb2TkiXbFPBGZzGP2ao2", "bitcoin address 1"));
         addressArray.add(new BitcoinAddress("1AXELoQwPgBeLs5UB9hRQoKR6HMnK4mU54", "Bitcoin address 2"));
         addressArray.add(new BitcoinAddress("19a6z2UjoePW923uS4uTyaCeXqGvYBx7Pf", "Bitcoin address 3"));
-        addressArray.add(new BitcoinAddress("12DvegM6nX5p1RZbFZN5WSfvGzpXbCxGv1", "Bitcoin address 3"));
+        addressArray.add(new BitcoinAddress("13EyH24DhHSdoNdXYTVQJMDvWQihpEhGqk", "Bitcoin address 3"));
         addressArray.add(new BitcoinAddress("1Hj6nKoPYhp8PtmxSZkZ9MWLpyW8C74Su9", "Bitcoin address 3"));
+        
         
         /* for (int i = 4; i < 26; i++) {
             addressArray.add(new BitcoinAddress("YFG6d7SGFi7SF7i6ASfg76iafg7aSDg7ad", "Bitcoin auto-address " + i));
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
         
         
         
-        double btc = 0.00045088;
+        double btc = 0.0001;
         BitcoinchartsExchangerate btcr = new BitcoinchartsExchangerate();
         
         TextView t = (TextView) findViewById(R.id.textbox);

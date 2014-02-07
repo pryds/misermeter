@@ -11,6 +11,8 @@ public class BitcoinAddress {
     private double balance; // in BTC
     private String comment;
     
+    private static final String CURRENCY_NAME = "BTC";
+    
     public BitcoinAddress(String address, String comment) {
         this.address = address;
         this.balance = 0.0;
@@ -29,8 +31,21 @@ public class BitcoinAddress {
         return address;
     }
     
+    public String getShortenedAddress() {
+        int shortSize = 15; //in chars
+        
+        if (shortSize > address.length())
+            return address;
+        
+        return address.substring(0, shortSize) + "...";
+    }
+    
     public String getBalanceAsString() {
-        return String.format("BTC %.8f", balance);
+        return String.format(CURRENCY_NAME + " %.8f", balance);
+    }
+    
+    public String getRoundedBalanceAsString() {
+        return String.format(CURRENCY_NAME + " %.4f", balance);
     }
     
     public String getComment() {
@@ -39,6 +54,10 @@ public class BitcoinAddress {
     
     public String getConvertedBalanceAsString() {
         return String.format("DKK %.2f", balance * 4827.0);
+    }
+    
+    public int getIconRessource() {
+        return R.drawable.bitcoin_icon;
     }
     
     private String readStringFromHTTP(String urlString) {
