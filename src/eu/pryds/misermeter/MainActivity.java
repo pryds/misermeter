@@ -2,33 +2,39 @@ package eu.pryds.misermeter;
 
 import java.util.ArrayList;
 
+import eu.pryds.misermeter.AddressArrayAdapter.BalanceConverter;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
     
-    private ArrayList<BitcoinAddress> addressArray = new ArrayList<BitcoinAddress>();
+    private ArrayList<AddressArrayAdapter.AddressItem> addressArray
+            = new ArrayList<AddressArrayAdapter.AddressItem>();
     private AddressArrayAdapter adapter;
+    
+    private SparseArray<AddressArrayAdapter.BalanceConverter> balanceConverters
+            = new SparseArray<AddressArrayAdapter.BalanceConverter>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // Set up available converters:
+        balanceConverters.put(BalanceConverter.CONV_BITCOINCHARTS, new BitcoinchartsConverter());
         
-        addressArray.add(new BitcoinAddress("1DBUPW5iJq13Ufb2TkiXbFPBGZzGP2ao2", "bitcoin address 1"));
-        addressArray.add(new BitcoinAddress("1AXELoQwPgBeLs5UB9hRQoKR6HMnK4mU54", "Bitcoin address 2"));
-        addressArray.add(new BitcoinAddress("19a6z2UjoePW923uS4uTyaCeXqGvYBx7Pf", "Bitcoin address 3"));
-        addressArray.add(new BitcoinAddress("13EyH24DhHSdoNdXYTVQJMDvWQihpEhGqk", "Bitcoin address 3"));
-        addressArray.add(new BitcoinAddress("1Hj6nKoPYhp8PtmxSZkZ9MWLpyW8C74Su9", "Bitcoin address 3"));
+        addressArray.add(new BitcoinAddress("1DBUPW5iJq13Ufb2TkiXbFPBGZzGP2ao2", "bitcoin address 1", balanceConverters.get(BalanceConverter.CONV_BITCOINCHARTS)));
+        addressArray.add(new BitcoinAddress("1AXELoQwPgBeLs5UB9hRQoKR6HMnK4mU54", "Bitcoin address 2", balanceConverters.get(BalanceConverter.CONV_BITCOINCHARTS)));
+        addressArray.add(new BitcoinAddress("19a6z2UjoePW923uS4uTyaCeXqGvYBx7Pf", "Bitcoin address 3", balanceConverters.get(BalanceConverter.CONV_BITCOINCHARTS)));
+        addressArray.add(new BitcoinAddress("13EyH24DhHSdoNdXYTVQJMDvWQihpEhGqk", "Bitcoin address 4", balanceConverters.get(BalanceConverter.CONV_BITCOINCHARTS)));
+        addressArray.add(new BitcoinAddress("1Hj6nKoPYhp8PtmxSZkZ9MWLpyW8C74Su9", "Bitcoin address 5", balanceConverters.get(BalanceConverter.CONV_BITCOINCHARTS)));
         
         
-        /* for (int i = 4; i < 26; i++) {
-            addressArray.add(new BitcoinAddress("YFG6d7SGFi7SF7i6ASfg76iafg7aSDg7ad", "Bitcoin auto-address " + i));
-        } */
         
         
         // Set up ArrayAdapter that puts data from addressVector into ListView:
@@ -42,8 +48,21 @@ public class MainActivity extends Activity {
         
         new Thread() {
             public void run() {
+                // Update values from addresses:
                 for (int i = 0; i < addressArray.size(); i++) {
                     addressArray.get(i).updateFromFeed();
+                    
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+                
+                // Update Converters to contain newest exchange rates:
+                for (int i = 0; i < balanceConverters.size(); i++) {
+                    int key = balanceConverters.keyAt(i);
+                    balanceConverters.get(key).updateFromFeed();
                     
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -60,10 +79,10 @@ public class MainActivity extends Activity {
         
         
         double btc = 0.0001;
-        BitcoinchartsExchangerate btcr = new BitcoinchartsExchangerate();
+        BitcoinchartsConverter btcr = new BitcoinchartsConverter();
         
         TextView t = (TextView) findViewById(R.id.textbox);
-        t.setText("BTC: " + formatBTC(btc) + "\nDKK: " + formatLocal(btcr.convertValue(btc, "DKK")));
+        t.setText("BTC: " + formatBTC(btc) + "\nDKK: " + formatLocal(btcr.convertValue(btc, BalanceConverter.CURRENCY_DKK)));
     }
     
     @Override
@@ -81,5 +100,4 @@ public class MainActivity extends Activity {
     private static String formatLocal(double localCurrency) {
         return String.format("%.2f", localCurrency);
     }
-    
 }

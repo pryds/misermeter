@@ -3,20 +3,30 @@ package eu.pryds.misermeter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Currency;
+
+import eu.pryds.misermeter.AddressArrayAdapter.BalanceConverter;
 
 import android.util.Log;
+import android.util.SparseArray;
 
-public class BitcoinAddress {
+public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
+    private static final int[] COMPATIPLE_CONVERTERS = new int[] {
+        BalanceConverter.CONV_BITCOINCHARTS
+    };
+    
     private String address;
     private double balance; // in BTC
     private String comment;
+    private BalanceConverter conv;
     
     private static final String CURRENCY_NAME = "BTC";
     
-    public BitcoinAddress(String address, String comment) {
+    public BitcoinAddress(String address, String comment, BalanceConverter converter) {
         this.address = address;
         this.balance = 0.0;
         this.comment = comment;
+        this.conv = converter;
     }
     
     public void updateFromFeed() {
@@ -53,11 +63,19 @@ public class BitcoinAddress {
     }
     
     public String getConvertedBalanceAsString() {
-        return String.format("DKK %.2f", balance * 4827.0);
+        return String.format("DKK %.2f", conv.convertValue(balance, BalanceConverter.CURRENCY_DKK));
     }
     
     public int getIconRessource() {
         return R.drawable.bitcoin_icon;
+    }
+    
+    public boolean supportsConverter(int converter) {
+        for (int i = 0; i < COMPATIPLE_CONVERTERS.length; i++) {
+            if (COMPATIPLE_CONVERTERS[i] == converter)
+                return true;
+        }
+        return false;
     }
     
     private String readStringFromHTTP(String urlString) {

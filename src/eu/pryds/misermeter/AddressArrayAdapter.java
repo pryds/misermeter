@@ -11,16 +11,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
+public class AddressArrayAdapter extends ArrayAdapter<AddressArrayAdapter.AddressItem> {
     // Based on example at http://sogacity.com/how-to-make-a-custom-arrayadapter-for-listview/
-    private ArrayList<BitcoinAddress> entries;
+    private ArrayList<AddressItem> entries;
     private Activity activity;
 
     public AddressArrayAdapter(Context context, int resource) {
         super(context, resource);
     }
     
-    public AddressArrayAdapter(Activity activity, int textViewResourceId, ArrayList<BitcoinAddress> entries) {
+    public AddressArrayAdapter(Activity activity, int textViewResourceId, ArrayList<AddressItem> entries) {
         super(activity, textViewResourceId, entries);
         this.entries = entries;
         this.activity = activity;
@@ -54,7 +54,7 @@ public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
         else
             holder=(ViewHolder)v.getTag();
  
-        final BitcoinAddress custom = entries.get(position);
+        final AddressItem custom = entries.get(position);
         if (custom != null) {
             holder.comment.setText(custom.getComment());
             holder.balance.setText(custom.getRoundedBalanceAsString());
@@ -63,5 +63,26 @@ public class AddressArrayAdapter extends ArrayAdapter<BitcoinAddress> {
             holder.icon.setImageResource(custom.getIconRessource());
         }
         return v;
+    }
+    
+    public interface AddressItem {
+        public void updateFromFeed();
+        public String getShortenedAddress();
+        public String getRoundedBalanceAsString();
+        public String getComment();
+        public String getConvertedBalanceAsString();
+        public int getIconRessource();
+        public boolean supportsConverter(int converter);
+    }
+    
+    public interface BalanceConverter {
+        public static final int CURRENCY_EUR = 1;
+        public static final int CURRENCY_DKK = 2;
+        public static final int CURRENCY_USD = 3;
+        
+        public static final int CONV_BITCOINCHARTS = 1;
+        
+        public void updateFromFeed();
+        public double convertValue(double fromValue, int toCurrency);
     }
 }
