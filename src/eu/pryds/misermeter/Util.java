@@ -9,20 +9,21 @@ import android.util.Log;
 public class Util {
     public static String readStringFromHTTP(String urlString) {
         BufferedReader in;
+        StringBuilder str = new StringBuilder();
         try {
             // Create a URL for the desired page
             URL url = new URL(urlString);
 
             // Read all the text returned by the server
             in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String str;
-            if ((str = in.readLine()) != null) {
-                return str;
+            String readLine;
+            while ((readLine = in.readLine()) != null) {
+                str.append(readLine).append('\n');
             }
             in.close();
         } catch (Exception e) {
-            Log.d("FeedUpdate", "Error: " + e.toString());
-        }
-        return "0";
+            Log.d(MainActivity.DEBUG_STR, "Error: " + e.toString());
+        } //TODO: Finally: close reader
+        return str.toString();
     }
 }

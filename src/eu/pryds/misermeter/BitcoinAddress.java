@@ -14,6 +14,7 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
     private double balance; // in BTC
     private String comment;
     private BalanceConverter conv;
+    private long lastUpdate;
     
     private static final String CURRENCY_NAME = "BTC";
     
@@ -22,13 +23,25 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
         this.balance = 0.0;
         this.comment = comment;
         this.conv = converter;
+        this.lastUpdate = 0;
     }
     
     public void updateFromFeed() {
-        String feedUrl = "http://blockchain.info/da/q/addressbalance/" + address;
-        long satoshi = Long.parseLong(Util.readStringFromHTTP(feedUrl));
-        Log.d("FeedUpdate", "Blockchain address result: " + satoshi + " - Address: " + address);
-        balance = satoshi * 0.00000001;
+        final long MINIMUM_DELAY_TIME = 10000; // 10 sec
+        // blockchain.info says: "Please limit your queries to a maxmimum of 1 every 10 seconds."
+        
+        long updateTime = System.currentTimeMillis();
+        
+        if (updateTime > lastUpdate + MINIMUM_DELAY_TIME) {
+            String feedUrl = "http://blockchain.info/da/q/addressbalance/" + address;
+            String satoshiStr = Util.readStringFromHTTP(feedUrl).trim();
+            if (satoshiStr != null) {
+                long satoshi = Long.parseLong(satoshiStr);
+                Log.d(MainActivity.DEBUG_STR, "Blockchain address result: " + satoshi + " - Address: " + address);
+                balance = satoshi * 0.00000001;
+                lastUpdate = updateTime;
+            }
+        }
     }
     
     
@@ -58,6 +71,7 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
     }
     
     public String getConvertedBalanceAsString() {
+        //TODO: currency
         return String.format("DKK %.2f", conv.convertValue(balance, BalanceConverter.CURRENCY_DKK));
     }
     
