@@ -81,6 +81,7 @@ public class AddressArrayAdapter extends ArrayAdapter<AddressArrayAdapter.Addres
         public static final int CURRENCY_USD = 3;
         
         public static final int CONV_BITCOINCHARTS = 1;
+        public static final int CONV_BITCOINAVERAGE_GLOBALTICKER = 2;
         
         public void updateFromFeed();
         public double convertValue(double fromValue, int toCurrency);

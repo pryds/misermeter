@@ -1,18 +1,13 @@
 package eu.pryds.misermeter;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Currency;
-
 import eu.pryds.misermeter.AddressArrayAdapter.BalanceConverter;
 
 import android.util.Log;
-import android.util.SparseArray;
 
 public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
     private static final int[] COMPATIPLE_CONVERTERS = new int[] {
-        BalanceConverter.CONV_BITCOINCHARTS
+        BalanceConverter.CONV_BITCOINCHARTS,
+        BalanceConverter.CONV_BITCOINAVERAGE_GLOBALTICKER
     };
     
     private String address;
@@ -30,9 +25,9 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
     }
     
     public void updateFromFeed() {
-        String feedUrl = "http://blockchain.info/da/q/addressbalance/";
-        long satoshi = Long.parseLong(readStringFromHTTP(feedUrl + address));
-        Log.d("FeedUpdate", "Address result: " + satoshi + " - Address: " + address);
+        String feedUrl = "http://blockchain.info/da/q/addressbalance/" + address;
+        long satoshi = Long.parseLong(Util.readStringFromHTTP(feedUrl));
+        Log.d("FeedUpdate", "Blockchain address result: " + satoshi + " - Address: " + address);
         balance = satoshi * 0.00000001;
     }
     
@@ -76,24 +71,5 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
                 return true;
         }
         return false;
-    }
-    
-    private String readStringFromHTTP(String urlString) {
-        BufferedReader in;
-        try {
-            // Create a URL for the desired page
-            URL url = new URL(urlString);
-
-            // Read all the text returned by the server
-            in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String str;
-            if ((str = in.readLine()) != null) {
-                return str;
-            }
-            in.close();
-        } catch (Exception e) {
-            Log.d("FeedUpdate", "Error: " + e.toString());
-        }
-        return "0";
     }
 }
