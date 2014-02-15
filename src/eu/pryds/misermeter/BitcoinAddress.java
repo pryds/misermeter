@@ -36,14 +36,21 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
             String feedUrl = "http://blockchain.info/da/q/addressbalance/" + address;
             String satoshiStr = Util.readStringFromHTTP(feedUrl).trim();
             if (satoshiStr != null) {
-                long satoshi = Long.parseLong(satoshiStr);
-                Log.d(MainActivity.DEBUG_STR, "Blockchain address result: " + satoshi + " - Address: " + address);
-                balance = satoshi * 0.00000001;
-                lastUpdate = updateTime;
+                try {
+                    long satoshi = Long.parseLong(satoshiStr);
+                    Log.d(MainActivity.DEBUG_STR, "Blockchain address result: " + satoshi + " - Address: " + address);
+                    balance = satoshi * 0.00000001;
+                    lastUpdate = updateTime;
+                } catch (NumberFormatException e) {
+                    Log.e(MainActivity.DEBUG_STR, "Fetched string \"" + satoshiStr + "\" doesn't seem to be a valid number. " + e);
+                }
             }
         }
     }
     
+    public int getAddressType() {
+        return ADDRESSTYPE_BITCOIN;
+    }
     
     public String getAddress() {
         return address;
@@ -85,5 +92,9 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
                 return true;
         }
         return false;
+    }
+    
+    public BalanceConverter getConverter() {
+        return conv;
     }
 }

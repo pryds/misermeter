@@ -25,4 +25,8 @@ public class BitcoinchartsConverter implements AddressArrayAdapter.BalanceConver
         // TODO Auto-generated method stub
         // remember: only once per 15 minutes!
     }
+
+    public int getConverterType() {
+        return CONV_BITCOINCHARTS;
+    }
 }

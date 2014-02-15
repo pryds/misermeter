@@ -65,16 +65,32 @@ public class AddressArrayAdapter extends ArrayAdapter<AddressArrayAdapter.Addres
         return v;
     }
     
+    /**
+     * To implement a new type of crypto-currency or similar, extend this
+     * interface.
+     * @author pryds
+     *
+     */
     public interface AddressItem {
+        public static final int ADDRESSTYPE_BITCOIN = 1;
+        
         public void updateFromFeed();
+        public int getAddressType();
+        public String getAddress();
         public String getShortenedAddress();
         public String getRoundedBalanceAsString();
         public String getComment();
         public String getConvertedBalanceAsString();
         public int getIconRessource();
         public boolean supportsConverter(int converter);
+        public BalanceConverter getConverter();
     }
     
+    /**
+     * To implement a new source for exchange rates, extend this interface.
+     * @author pryds
+     *
+     */
     public interface BalanceConverter {
         public static final int CONV_BITCOINCHARTS = 1;
         public static final int CONV_BITCOINAVERAGE_GLOBALTICKER = 2;
@@ -246,7 +262,38 @@ public class AddressArrayAdapter extends ArrayAdapter<AddressArrayAdapter.Addres
         public static final int CURRENCY_ZMW = 165;
         public static final int CURRENCY_ZWL = 166;
         
+        /**
+         * Return type of this converter. Must be one of
+         * BalanceConverter.CONV_xxx. When implementing, simply returning the
+         * appropriate static int is sufficient.
+         * @return type of this converter
+         */
+        public int getConverterType();
+        
+        /**
+         * Do network, parsing and/or calculating work to fetch exchange rates
+         * from web feed or similar. This method is called from a worker thread,
+         * so results don't have to come in instantaneously.
+         * 
+         * It is the responsibility of this method not to poll any feeds/API
+         * etc. to a greater extent than what is allowed or tolerated. Some
+         * feeds ask to only poll once per minute, for instance.
+         * 
+         * If an update is unsuccessful, the method must handle that in a way
+         * that doesn't interrupt the user. Ignore the unsuccessful attempt,
+         * but don't pretend it was successful, though. For instance, don't
+         * update time of last successful update, if it wasn't successful.
+         */
         public void updateFromFeed();
+        
+        /**
+         * Calculate and return value from exchange rates obtained by
+         * updateFromFeed().
+         * @param fromValue  The value that should be converted
+         * @param toCurrency Currency to convert into. Must be one of
+         *                   BalanceConverter.CURRENCY_xxx
+         * @return Calculated value expressed in the toCurrency parameter
+         */
         public double convertValue(double fromValue, int toCurrency);
     }
 }

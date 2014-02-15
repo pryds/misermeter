@@ -22,7 +22,7 @@ public class Util {
             }
             in.close();
         } catch (Exception e) {
-            Log.d(MainActivity.DEBUG_STR, "Error: " + e.toString());
+            Log.e(MainActivity.DEBUG_STR, "Error: " + e.toString());
         } //TODO: Finally: close reader
         return str.toString();
     }

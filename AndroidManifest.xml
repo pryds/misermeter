@@ -14,7 +14,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light" >
+        android:theme="@android:style/Theme.Holo.Light"
+        android:backupAgent="MiserBackupAgent" >
+        <meta-data android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIFAoQ2yYhAm06NiE5EOezP2cG985VEN5Wf8wLJA" />
         <activity
             android:name="eu.pryds.misermeter.MainActivity"
             android:label="@string/app_name" >
