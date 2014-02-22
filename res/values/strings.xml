@@ -8,5 +8,25 @@
     <string name="comment">Comment, description or name</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="title_activity_address_detail">Address Detail</string>
+    <string name="detail_comment_label">Comment:</string>
+    <string name="detail_address_label">Address:</string>
+    <string name="detail_balance_label">Balance:</string>
+    <string name="detail_converted_balance_label">Converted balance:</string>
+    <plurals name="detail_updatedseconds">
+        <item quantity="one">(updated one second ago)</item>
+        <item quantity="other">(updated %d seconds ago)</item>
+    </plurals>
+    <plurals name="detail_updatedminutes">
+        <item quantity="one">(updated one minute ago)</item>
+        <item quantity="other">(updated %d minutes ago)</item>
+    </plurals>
+    <plurals name="detail_updatedhours">
+        <item quantity="one">(updated one hour ago)</item>
+        <item quantity="other">(updated %d hours ago)</item>
+    </plurals>
+    <string name="detail_updateunknown">(update time unknown)</string>
+    <string name="detail_remove_button">Remove</string>
+    <string name="detail_removed">Address \"%1$s\" was removed</string>
 
 </resources>

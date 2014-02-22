@@ -19,7 +19,7 @@ public class BitcoinaverageGlobaltickerConverter implements AddressArrayAdapter.
     public BitcoinaverageGlobaltickerConverter() {
         rates = new SparseArray<CurrencyRate>();
         setupSupportedCurrencies();
-        lastUpdate = 0;
+        lastUpdate = -1;
     }
     
     public int getConverterType() {
@@ -58,6 +58,7 @@ public class BitcoinaverageGlobaltickerConverter implements AddressArrayAdapter.
             parsedData = parser.readJsonStream(jsonStr);
         } catch (IOException e) {
             Log.e(MainActivity.DEBUG_STR, "Problem reading json: " + e);
+            return;
         }
         Log.d(MainActivity.DEBUG_STR, parsedData.size() + " entries parsed from JSON data.");
         
@@ -79,6 +80,7 @@ public class BitcoinaverageGlobaltickerConverter implements AddressArrayAdapter.
                 it.remove();
             }
             Log.d(MainActivity.DEBUG_STR, rates.size() + " entries added to rates.");
+            lastUpdate = updateTime;
         }
     }
     
@@ -90,6 +92,10 @@ public class BitcoinaverageGlobaltickerConverter implements AddressArrayAdapter.
                return key;
         }
         return -1;
+    }
+    
+    public long getLastSuccesfulUpdate() {
+        return lastUpdate;
     }
     
     private class FeedCurrencyInfo {

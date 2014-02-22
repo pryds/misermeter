@@ -29,4 +29,9 @@ public class BitcoinchartsConverter implements AddressArrayAdapter.BalanceConver
     public int getConverterType() {
         return CONV_BITCOINCHARTS;
     }
+    
+    public long getLastSuccesfulUpdate() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

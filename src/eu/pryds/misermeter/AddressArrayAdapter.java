@@ -78,7 +78,9 @@ public class AddressArrayAdapter extends ArrayAdapter<AddressArrayAdapter.Addres
         public int getAddressType();
         public String getAddress();
         public String getShortenedAddress();
+        public String getBalanceAsString();
         public String getRoundedBalanceAsString();
+        public long getLastSuccesfulUpdate();
         public String getComment();
         public String getConvertedBalanceAsString();
         public int getIconRessource();
@@ -295,5 +297,11 @@ public class AddressArrayAdapter extends ArrayAdapter<AddressArrayAdapter.Addres
          * @return Calculated value expressed in the toCurrency parameter
          */
         public double convertValue(double fromValue, int toCurrency);
+        
+        /**
+         * TODO
+         * @return
+         */
+        public long getLastSuccesfulUpdate();
     }
 }

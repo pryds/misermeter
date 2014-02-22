@@ -7,17 +7,19 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
+        android:backupAgent="eu.pryds.misermeter.MiserBackupAgent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light"
-        android:backupAgent="MiserBackupAgent" >
-        <meta-data android:name="com.google.android.backup.api_key"
+        android:theme="@android:style/Theme.Holo.Light" >
+        <meta-data
+            android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIFAoQ2yYhAm06NiE5EOezP2cG985VEN5Wf8wLJA" />
+
         <activity
             android:name="eu.pryds.misermeter.MainActivity"
             android:label="@string/app_name" >
@@ -26,6 +28,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="eu.pryds.misermeter.AddressDetailActivity"
+            android:label="@string/title_activity_address_detail"
+            android:parentActivityName="eu.pryds.misermeter.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="eu.pryds.misermeter.MainActivity" />
         </activity>
     </application>
 

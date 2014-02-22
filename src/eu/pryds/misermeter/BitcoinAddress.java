@@ -23,7 +23,7 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
         this.balance = 0.0;
         this.comment = comment;
         this.conv = converter;
-        this.lastUpdate = 0;
+        this.lastUpdate = -1;
     }
     
     public void updateFromFeed() {
@@ -54,6 +54,10 @@ public class BitcoinAddress implements AddressArrayAdapter.AddressItem {
     
     public String getAddress() {
         return address;
+    }
+    
+    public long getLastSuccesfulUpdate() {
+        return lastUpdate;
     }
     
     public String getShortenedAddress() {

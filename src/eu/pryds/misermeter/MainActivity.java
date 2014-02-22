@@ -10,13 +10,17 @@ import eu.pryds.misermeter.AddressArrayAdapter.BalanceConverter;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.backup.BackupManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements AddAddressDialogListener {
     public static final String DEBUG_STR = "MiserMeterDebug";
@@ -26,6 +30,7 @@ public class MainActivity extends Activity implements AddAddressDialogListener {
     private static final String PREFS_ADDRESS_PREFIX = "itemAddress";
     private static final String PREFS_COMMENT_PREFIX = "itemComment";
     private static final String PREFS_CONVERTERTYPE_PREFIX = "itemConvertertype";
+    private static final int REQCODE_DETAILS_REMOVE = 1;
     
     Random rand = new Random();
     
@@ -61,7 +66,7 @@ public class MainActivity extends Activity implements AddAddressDialogListener {
             switch (addressType) {
             case AddressItem.ADDRESSTYPE_BITCOIN:
                 item = new BitcoinAddress(address, comment, balanceConverters.get(converterType));
-                break; //TODO: breaks out of switch of of for?
+                break; //TODO: breaks out of switch or of for?
             default:
                 Log.e(DEBUG_STR, "Error: Trying to add unimplemented address type. Ignoring.");
             }
@@ -76,6 +81,34 @@ public class MainActivity extends Activity implements AddAddressDialogListener {
         
         ListView listView = (ListView) findViewById(R.id.address_list);
         listView.setAdapter(adapter);
+        
+        // Set up a listener for handling clicks on items in the list:
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AddressItem clickedItem = addressArray.get((int)id);
+                Log.d(DEBUG_STR, "A list item was clicked: " + view + ", pos: "
+                        + position + ", id: " + id + ", address: "
+                        + clickedItem.getAddress());
+                
+                Intent intent = new Intent(MainActivity.this, AddressDetailActivity.class);
+                
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_ID, id);
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_COMMENT,
+                        clickedItem.getComment());
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_ADDRESS,
+                        clickedItem.getAddress());
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_BALANCE,
+                        clickedItem.getBalanceAsString());
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_CONVBALANCE,
+                        clickedItem.getConvertedBalanceAsString());
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_LASTADDRUPDATE,
+                        clickedItem.getLastSuccesfulUpdate());
+                intent.putExtra(AddressDetailActivity.EXTRA_MESSAGE_LASTCONVUPDATE,
+                        clickedItem.getConverter().getLastSuccesfulUpdate());
+                
+                startActivityForResult(intent, REQCODE_DETAILS_REMOVE);
+            }
+        });
         
         
         // Launch address balance update thread
@@ -151,11 +184,36 @@ public class MainActivity extends Activity implements AddAddressDialogListener {
     }
     
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {    
+        // handle results when returning from other activities:
+        super.onActivityResult(requestCode, resultCode, data); 
+        switch(requestCode) {
+            case (REQCODE_DETAILS_REMOVE):
+                if (resultCode == Activity.RESULT_OK) {
+                    long idToRemove = data.getLongExtra(AddressDetailActivity.EXTRA_MESSAGE_ID, -1);
+                    if (idToRemove >= 0 && idToRemove < addressArray.size()) {
+                        //Remove item from list:
+                        AddressItem removedItem = addressArray.remove((int)idToRemove);
+                        adapter.notifyDataSetChanged();
+                        saveAllAddressesToPrefs();
+                        
+                        //Notify user via toast:
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getString(R.string.detail_removed,
+                                        removedItem.getShortenedAddress()),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+                break;
+        }
+    }
+    
+    @Override
     public void onDestroy() {
         Log.d(DEBUG_STR, "Setting runUpdateThreads = false");
         runUpdateThreads = false;
         super.onDestroy();
-
     }
     
     /**
@@ -211,15 +269,34 @@ public class MainActivity extends Activity implements AddAddressDialogListener {
     private void addLastAddressItemToPrefs() {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
-        int newIndex = addressArray.size() - 1;
         
         editor.putInt(PREFS_ADDRESS_COUNT, addressArray.size());
-        editor.putInt(PREFS_ADDRESSTYPE_PREFIX + newIndex, addressArray.get(newIndex).getAddressType());
-        editor.putString(PREFS_ADDRESS_PREFIX + newIndex, addressArray.get(newIndex).getAddress());
-        editor.putString(PREFS_COMMENT_PREFIX + newIndex, addressArray.get(newIndex).getComment());
-        editor.putInt(PREFS_CONVERTERTYPE_PREFIX + newIndex, addressArray.get(newIndex).getConverter().getConverterType());
+        int newIndex = addressArray.size() - 1;
+        saveAddressItemToPrefs(newIndex, editor);
         editor.commit();
+        
         BackupManager bm = new BackupManager(this);
         bm.dataChanged();
+    }
+    
+    private void saveAllAddressesToPrefs() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        
+        editor.putInt(PREFS_ADDRESS_COUNT, addressArray.size());
+        for (int i = 0; i < addressArray.size(); i++) {
+            saveAddressItemToPrefs(i, editor);
+        }
+        editor.commit();
+        
+        BackupManager bm = new BackupManager(this);
+        bm.dataChanged();
+    }
+    
+    private void saveAddressItemToPrefs(int index, SharedPreferences.Editor editor) {
+        editor.putInt(PREFS_ADDRESSTYPE_PREFIX + index, addressArray.get(index).getAddressType());
+        editor.putString(PREFS_ADDRESS_PREFIX + index, addressArray.get(index).getAddress());
+        editor.putString(PREFS_COMMENT_PREFIX + index, addressArray.get(index).getComment());
+        editor.putInt(PREFS_CONVERTERTYPE_PREFIX + index, addressArray.get(index).getConverter().getConverterType());
     }
 }
