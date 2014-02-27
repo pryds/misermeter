@@ -75,7 +75,7 @@ public class BitcoinaverageGlobaltickerConverter implements AddressArrayAdapter.
                 if (index != -1) {
                     double rate = (info.ask + info.bid) / 2.0;
                     rates.put(index, new CurrencyRate(name, rate));
-                    Log.d(MainActivity.DEBUG_STR, "Currency: " + name + " - Ask: " + info.ask + " - Bid: " + info.bid + " - Rate: " + rate);
+                    //Log.d(MainActivity.DEBUG_STR, "Currency: " + name + " - Ask: " + info.ask + " - Bid: " + info.bid + " - Rate: " + rate);
                 }
                 it.remove();
             }

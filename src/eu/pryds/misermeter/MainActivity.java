@@ -3,6 +3,9 @@ package eu.pryds.misermeter;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import eu.pryds.misermeter.AddAddressDialogFragment.AddAddressDialogListener;
 import eu.pryds.misermeter.AddressArrayAdapter.AddressItem;
 import eu.pryds.misermeter.AddressArrayAdapter.BalanceConverter;
@@ -157,6 +160,15 @@ public class MainActivity extends Activity implements AddAddressDialogListener {
                 Log.d(DEBUG_STR, "Exchange rate update thread shutting down.");
             }
         }.start();
+        
+     // Look up the AdView as a resource and load a request.
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // Emulator
+        .addTestDevice("5A7420F5204BE6AFD36D5D1534B035CE") // My Galaxy Nexus test phone
+        .build();
+        adView.loadAd(adRequest);
+        int i=0; i++;
     }
     
     @Override
